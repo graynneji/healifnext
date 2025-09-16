@@ -110,10 +110,11 @@ export async function signup(selectedQuesAnswers, formData) {
   });
 
   if (error) {
-    return "Error, signing up please try again";
+    console.log(error);
+    return `Error, signing up please try again ${error}`;
   }
   const therapistId = Math.random() < 0.5 ? 6 : 6;
-
+  console.log(signUpData);
   const userData = {
     user_id: signUpData.user.id,
     name: formData.get("name"),
@@ -134,7 +135,6 @@ export async function signup(selectedQuesAnswers, formData) {
     .select();
 
   if (InsertError) {
-    console.log(InsertError);
     return "An account is associated with the email";
   }
 
@@ -228,7 +228,6 @@ export async function updateViewNotes(patientId, formData) {
     .select();
 
   if (updateNotesError) {
-    console.error("Update error:", updateNotesError);
     return null;
   }
 
@@ -236,9 +235,19 @@ export async function updateViewNotes(patientId, formData) {
 }
 
 // schedule an appointment
-export async function appointment(options, formData) {
+export async function appointment({ userId, therapistId, color }, formData) {
   const title = formData.get("title");
-  const datetime = formData.get("datetime");
+  const start = formData.get("start");
+  const event = {
+    title,
+    start,
+    backgroundColor: color,
+    borderColor: color,
+    patient_id: userId,
+    therapist_id: therapistId,
+  };
+  const { data, error } = await supabase.from("appointment").insert([event]);
+  return { data, error };
 }
 
 // create post in community
@@ -262,6 +271,37 @@ export async function createPost({ userID, author }, formData) {
   };
 
   const { data, error } = await supabase.from("article").insert([post]);
-  console.log(data, error);
+
   return { data, error };
+}
+
+export async function postReply({ userId, articleId, author }, formData) {
+  const reply = formData.get("reply");
+  const replyData = {
+    user_id: userId,
+    article_id: articleId,
+    content: reply,
+    author,
+  };
+  const { data, error } = await supabase
+    .from("article_comments")
+    .insert([replyData]);
+  return { data, error };
+}
+
+export async function postLikes(userId, discussionId) {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("article_likes")
+    .select("id")
+    .match({ user_id: userId, discussion_id: discussionId });
+  if (data && data.length > 0) {
+    // already liked, don't insert again
+    return;
+  }
+  const post = {
+    user_id: userId,
+    discussion_id: discussionId,
+  };
+  await supabase.from("article_likes").insert([post]);
 }

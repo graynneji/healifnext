@@ -1,5 +1,10 @@
 import { ChatTeardropText, Clock, Heart } from "@phosphor-icons/react/dist/ssr";
 import styles from "./Discussions.module.css";
+import { useState } from "react";
+import { getPosts, incrementAndGetViews } from "@/app/_lib/data-services";
+import UnitReplyCount from "../UnitReplyCount/UnitReplyCount";
+import Likes from "../Likes/Likes";
+import { formatCommunityTimeAgo } from "@/app/utils";
 
 function Discussions({
   setDiscussion,
@@ -8,111 +13,69 @@ function Discussions({
   setOpen,
   activeCategory,
   searchTerm,
+  initialDiscussions = [],
+  setViews,
+  comments,
+  handleLikes,
 }) {
-  const discussions = [
-    {
-      id: 1,
-      title: "Coping with morning anxiety - What works for you?",
-      category: "anxiety",
-      author: "SarahM",
-      replies: 24,
-      likes: 56,
-      timeAgo: "2 hours ago",
-      content:
-        "I've been struggling with intense anxiety every morning. Looking for practical strategies...",
-      isHot: true,
-    },
-    {
-      id: 2,
-      title: "Setting boundaries with family members",
-      category: "relationships",
-      author: "MindfulJourneys",
-      replies: 18,
-      likes: 42,
-      timeAgo: "4 hours ago",
-      content:
-        "How do you maintain healthy boundaries while still showing love and care?",
-      isHot: false,
-    },
-    {
-      id: 3,
-      title: "Burnout recovery - My 6-month journey",
-      category: "career",
-      author: "RecoveringPerfectionist",
-      replies: 31,
-      likes: 89,
-      timeAgo: "1 day ago",
-      content:
-        "Sharing my experience recovering from severe burnout. Hope this helps someone...",
-      isHot: true,
-    },
-    {
-      id: 4,
-      title: "Daily meditation practice for beginners",
-      category: "self-care",
-      author: "ZenSeeker",
-      replies: 15,
-      likes: 38,
-      timeAgo: "2 days ago",
-      content:
-        "Starting a meditation practice can feel overwhelming. Here's how I built consistency...",
-      isHot: false,
-    },
-    {
-      id: 5,
-      title: "Dealing with seasonal depression",
-      category: "depression",
-      author: "WinterWarrior",
-      replies: 22,
-      likes: 51,
-      timeAgo: "3 days ago",
-      content:
-        "As the seasons change, my mood shifts dramatically. Anyone else experience this?",
-      isHot: false,
-    },
-    {
-      id: 6,
-      title: "Building self-confidence after trauma",
-      category: "growth",
-      author: "PhoenixRising",
-      replies: 27,
-      likes: 73,
-      timeAgo: "1 week ago",
-      content:
-        "My journey of rebuilding confidence and self-worth after difficult experiences...",
-      isHot: true,
-    },
-  ];
+  const [page, setPage] = useState(1);
+  const [countReply, setCountReply] = useState(0);
+  const [discussions, setDiscussions] = useState(initialDiscussions);
+  const [hasMore, setHasMore] = useState(false);
+  const pageSize = 3;
+
+  const replies = 22;
+  const likes = 51;
+  const timeAgo = "3 days ago";
+
+  const loadMore = async () => {
+    const nextPage = page + 1;
+    const { data } = await getPosts(nextPage, pageSize);
+
+    if (!data || data.length === 0) {
+      setHasMore(false);
+      return;
+    }
+
+    setDiscussions((prev) => [...prev, ...data]);
+    setPage(nextPage);
+
+    if (data.length < pageSize) {
+      setHasMore(false);
+    }
+  };
 
   const filteredDiscussions = discussions.filter((discussion) => {
     const matchesCategory =
-      activeCategory === "all" || discussion.category === activeCategory;
+      activeCategory === "all" ||
+      discussion?.categories_article?.category_name === activeCategory;
     const matchesSearch =
       discussion.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       discussion.content.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesCategory && matchesSearch;
   });
-  const handleDiscussion = ({ discussion }) => {
+
+  const handleDiscussion = async ({ discussion }) => {
+    const { data } = await incrementAndGetViews(discussion?.id);
+    setViews(data);
     setDiscussion(discussion);
     setOpen(false);
   };
+
   return (
     <>
-      {" "}
       {/* Discussions List */}
       <div className={styles.discussionsList}>
-        {filteredDiscussions.map((discussion) => {
+        {filteredDiscussions?.map((discussion, idx) => {
           const Icon = getCategoryIcon(
-            discussion?.category || "ChatTeardropText"
+            discussion?.categories_article?.category_name || "ChatTeardropText"
           );
-          console.log("cate", discussion?.category);
-          //   const Icon = getCategoryIcon(discussion?.category);
-          console.log("Icon", Icon);
-          const categoryColor = getCategoryColor(discussion?.category);
-          console.log("Icon", categoryColor);
+          const categoryColor = getCategoryColor(
+            discussion?.categories_article?.category_name
+          );
           return (
             <div
-              key={discussion.id}
+              key={`${discussion?.id}-${idx}`}
               className={styles.discussionCard}
               onClick={() => handleDiscussion({ discussion })}
             >
@@ -131,9 +94,12 @@ function Discussions({
                     <Icon className={styles.discussionCategoryIconSvg} />
                   </div>
                   <span className={styles.discussionCategory}>
-                    {discussion.category.replace("-", " ")}
+                    {discussion?.categories_article?.category_name.replace(
+                      "-",
+                      " "
+                    )}
                   </span>
-                  {discussion.isHot && (
+                  {discussion.is_hot && (
                     <span className={styles.hotBadge}>Hot</span>
                   )}
                 </div>
@@ -145,15 +111,26 @@ function Discussions({
                 <div className={styles.discussionStats}>
                   <span className={styles.discussionStat}>
                     <ChatTeardropText className={styles.statIcon} />
-                    <span>{discussion.replies} replies</span>
+                    <UnitReplyCount discussionId={discussion?.id} />
+                    {/* <span>{discussion.replies} replies</span> */}
                   </span>
-                  <span className={styles.discussionStat}>
-                    <Heart className={styles.statIcon} />
-                    <span>{discussion.likes} likes</span>
+                  <span
+                    className={styles.discussionStat}
+                    onClick={() =>
+                      handleLikes(discussion?.author_id, discussion?.id)
+                    }
+                  >
+                    <Likes
+                      userId={discussion?.author_id}
+                      discussionId={discussion?.id}
+                    />
                   </span>
                   <span className={styles.discussionStat}>
                     <Clock className={styles.statIcon} />
-                    <span>{discussion.timeAgo}</span>
+                    <span>
+                      {formatCommunityTimeAgo(discussion?.created_at)}
+                    </span>
+                    {/* <span>{discussion.timeAgo}</span> */}
                   </span>
                 </div>
               </div>
@@ -163,7 +140,13 @@ function Discussions({
       </div>
       {/* Load More */}
       <div className={styles.loadMoreWrapper}>
-        <button className={styles.loadMoreBtn}>Load More Discussions</button>
+        <button
+          disabled={hasMore}
+          onClick={loadMore}
+          className={styles.loadMoreBtn}
+        >
+          Load More Discussions
+        </button>
       </div>
     </>
   );

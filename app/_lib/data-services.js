@@ -1,5 +1,4 @@
 "use server";
-// import { supabase } from "./supabase";
 import { redirect } from "next/navigation";
 import { createClient } from "../utils/supabase/server";
 
@@ -7,17 +6,17 @@ export async function getUserId() {
   const supabase = createClient();
   const { data: userData, error: userError } = await supabase.auth.getUser();
   if (!userData?.user) {
-    console.log(userData, userError);
     redirect("/login");
   }
   const userId = userData?.user?.id;
   const desgn = userData?.user?.user_metadata?.designation;
+
   return { userId, desgn };
 }
 
 export async function getUsers() {
-  const { userId } = await getUserId();
   const supabase = createClient();
+  const { userId } = await getUserId();
   const { data, error } = await supabase
     .from("user")
     .select(
@@ -26,7 +25,6 @@ export async function getUsers() {
     .eq("user_id", userId);
 
   if (error) {
-    console.log(error);
     redirect(`/login`);
   }
 
@@ -40,20 +38,13 @@ export async function getTherpistInfo() {
     .from("therapist")
     .select("id, balance, pending, total_earning")
     .eq("therapist_id", userId);
-  console.log(therapistError);
   return { therapistData, desgn };
 }
 
 export async function getAllPatientsAttachedToTherapist() {
-  // const { userId, desgn } = await getUserId();
   const supabase = createClient();
   const { therapistData, desgn } = await getTherpistInfo();
   if (desgn === "patient") return;
-  // const { data: therapistData, error: therapistError } = await supabase
-  //   .from("therapist")
-  //   .select("*")
-  //   .eq("therapist_id", userId);
-
   const { data: patientsTherapist, error } = await supabase
     .from("patients")
     .select(
@@ -76,7 +67,6 @@ export async function getNote(patientId) {
 
 export async function updateNote(patientId, notes, color) {
   const supabase = createClient();
-
   const { data: patientData, error } = await supabase
     .from("patients")
     .select("notes")
@@ -84,7 +74,6 @@ export async function updateNote(patientId, notes, color) {
     .single();
 
   if (error) {
-    console.error("Fetch error:", error);
     return null;
   }
 
@@ -106,30 +95,91 @@ export async function updateNote(patientId, notes, color) {
     .select();
 
   if (updateNotesError) {
-    console.error("Update error:", updateNotesError);
     return null;
   }
 
   return data;
 }
 
+//get Questionaire
 export async function getQuestionaire(patientId) {
   const supabase = createClient();
-
   const { data: questionaire, error } = await supabase
     .from("patients")
     .select("selected")
     .eq("patient_id", patientId);
 
-  if (error) {
-    console.log(error);
-  }
-  console.log(questionaire);
+  if (error) return;
   return questionaire;
 }
 
-// export async function getFinance(){
-// const supabase = createClient()
+//get Post in community
+export async function getPosts(page = 1, pageSize = 3) {
+  const supabase = createClient();
 
-// const {data, error}= supabase.from("transactions").select("")
-// }
+  const from = (page - 1) * pageSize;
+  const to = from + pageSize - 1;
+
+  const { data, error, count } = await supabase
+    .from("article")
+    .select("*, categories_article(category_name)", {
+      count: "exact",
+    })
+    .range(from, to)
+    .order("created_at", { ascending: false });
+
+  return { data, error, count };
+}
+
+export async function incrementAndGetViews(articleId) {
+  const supabase = createClient();
+
+  const { data: rpcData, error: rpcError } = await supabase.rpc(
+    "increment_views_bigint",
+    {
+      article_id: articleId,
+    }
+  );
+  if (rpcError) {
+    console.error("RPC Error:", rpcError);
+    console.log(rpcError, "rpcerror");
+  }
+  console.log(rpcError);
+  const { data, error } = await supabase
+    .from("article")
+    .select("views")
+    .eq("id", articleId)
+    .single();
+  console.log("rcp", data, error);
+  return { data, error };
+}
+
+export async function getComments(discussionId) {
+  const supabase = createClient();
+  const { data, error, count } = await supabase
+    .from("article_comments")
+    .select("*", { count: "exact" })
+    .eq("article_id", discussionId)
+    .order("created_at", { ascending: false });
+  return { data, error, count };
+}
+
+export async function likes(userId, articleId) {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("article_likes")
+    .select("user_id")
+    .match({ user_id: userId, discussion_id: articleId });
+
+  return { data, error };
+}
+
+export async function appointments(patientId, therapistId) {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("appointment")
+    .select("id, title, start, backgroundColor, borderColor")
+    .match({ patient_id: patientId, therapist_id: therapistId });
+
+  return { data, error };
+}

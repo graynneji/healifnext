@@ -11,51 +11,7 @@ import {
 import styles from "./PatientList.module.css";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { capitalizeFirstLetter } from "@/app/utils/capitalizeFirstLetter";
-
-// Mock data for patients
-const mockPatients = [
-  {
-    id: 1,
-    name: "Sarah Johnson",
-    lastAppointment: "2025-04-25T14:30:00",
-    upcomingAppointment: "2025-05-02T14:30:00",
-    status: "Confirmed",
-    notes: "Working on anxiety management techniques",
-  },
-  {
-    id: 2,
-    name: "Michael Chen",
-    lastAppointment: "2025-04-28T10:00:00",
-    upcomingAppointment: "2025-05-05T10:00:00",
-    status: "Confirmed",
-    notes: "Progress with depression treatment plan",
-  },
-  {
-    id: 3,
-    name: "Jennifer Smith",
-    lastAppointment: "2025-04-27T16:15:00",
-    upcomingAppointment: "2025-05-04T16:15:00",
-    status: "Rescheduling",
-    notes: "Family therapy sessions ongoing",
-  },
-  {
-    id: 4,
-    name: "Robert Williams",
-    lastAppointment: "2025-04-22T11:45:00",
-    upcomingAppointment: "2025-05-01T13:00:00",
-    status: "Confirmed",
-    notes: "Trauma-focused CBT",
-  },
-  {
-    id: 5,
-    name: "Emily Davis",
-    lastAppointment: "2025-04-24T09:30:00",
-    upcomingAppointment: "2025-05-08T09:30:00",
-    status: "Confirmed",
-    notes: "Stress management strategies",
-  },
-];
+import { capitalizeFirstLetter } from "@/app/utils";
 
 // Format date to readable string
 const formatDate = (dateString) => {
@@ -180,7 +136,7 @@ export default function PatientList({ patient, filteredPatients }) {
                   <div className={styles.appointmentDetail}>
                     <div className={styles.appointmentDate}>
                       <Calendar size={14} className={styles.appointmentIcon} />
-                      <span>
+                      <span style={{ color: "#065f46" }}>
                         {/* Next: {formatDate(patient.upcomingAppointment)} (
                         {getDaysUntil(patient.upcomingAppointment)}) */}
                         {/* Wednesday, 24 April 2025 */}
@@ -190,7 +146,7 @@ export default function PatientList({ patient, filteredPatients }) {
                     </div>
                     <div className={styles.appointmentDate}>
                       <Clock size={14} className={styles.appointmentIcon} />{" "}
-                      <span>
+                      <span style={{ color: "#065f46" }}>
                         {/* 10:00 am CST */}
                         {/* No appointments */}
                         {formatTime(patient?.appointment)}

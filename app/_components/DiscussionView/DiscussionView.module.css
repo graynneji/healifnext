@@ -13,6 +13,7 @@
 .backButton {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   color: #6b7280;
   background: none;
@@ -20,6 +21,7 @@
   cursor: pointer;
   margin-bottom: 1rem;
   transition: color 0.2s ease;
+  font-size: 15px;
 }
 
 .backButton:hover {
@@ -27,8 +29,8 @@
 }
 
 .backIcon {
-  width: 1rem;
-  height: 1rem;
+  width: 20px;
+  height: 20px;
 }
 
 .discussionMeta {
@@ -53,7 +55,7 @@
 }
 
 .categoryText {
-  font-size: 0.875rem;
+  font-size: 14px;
   font-weight: 500;
   color: #6b7280;
   text-transform: capitalize;
@@ -85,7 +87,7 @@
 }
 
 .title {
-  font-size: 1.5rem;
+  font-size: 15px;
   font-weight: bold;
   color: #111827;
   margin-bottom: 1rem;
@@ -101,7 +103,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  font-size: 0.875rem;
+  font-size: 14px;
   color: #6b7280;
 }
 
@@ -112,8 +114,8 @@
 }
 
 .timeIcon {
-  width: 1rem;
-  height: 1rem;
+  width: 18px;
+  height: 18px;
 }
 
 .actionButtons {
@@ -136,8 +138,8 @@
 }
 
 .actionIcon {
-  width: 1rem;
-  height: 1rem;
+  width: 2rem;
+  height: 2rem;
   color: #6b7280;
 }
 
@@ -179,7 +181,7 @@
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  font-size: 0.875rem;
+  font-size: 14px;
   color: #6b7280;
 }
 
@@ -190,8 +192,8 @@
 }
 
 .statIcon {
-  width: 1rem;
-  height: 1rem;
+  width: 2rem;
+  height: 2rem;
 }
 
 .likeButton {
@@ -233,7 +235,7 @@
 }
 
 .commentsTitle {
-  font-size: 1.125rem;
+  font-size: 15px;
   font-weight: 600;
   color: #111827;
   margin-bottom: 1.5rem;
@@ -276,7 +278,7 @@
 }
 
 .commentInput:focus {
-  border-color: #3b82f6;
+  border-color: #1f2937;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
@@ -290,8 +292,8 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background-color: #2563eb;
+  padding: .8rem 1rem;
+  background-color: var(--primary);
   color: white;
   border: none;
   border-radius: 0.5rem;
@@ -300,7 +302,7 @@
 }
 
 .submitButton:hover:not(:disabled) {
-  background-color: #1d4ed8;
+  background-color: var(--primary);
 }
 
 .submitButton:disabled {
@@ -309,193 +311,7 @@
 }
 
 .submitIcon {
-  width: 1rem;
-  height: 1rem;
-}
-
-.commentsList {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.commentItem {
-  border-bottom: 1px solid #f3f4f6;
-  padding-bottom: 1.5rem;
-}
-
-.commentItem:last-child {
-  border-bottom: none;
-}
-
-.comment {
-  display: flex;
-  gap: 0.75rem;
-}
-
-.commentAvatar {
-  width: 2rem;
-  height: 2rem;
-  background-color: #6b7280;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 0.875rem;
-  font-weight: 500;
-  flex-shrink: 0;
-}
-
-.commentContent {
-  flex: 1;
-}
-
-.commentHeader {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.commentAuthor {
-  font-weight: 500;
-  color: #111827;
-}
-
-.commentTime {
-  font-size: 0.875rem;
-  color: #9ca3af;
-}
-
-.commentText {
-  color: #374151;
-  margin-bottom: 0.75rem;
-  line-height: 1.625;
-}
-
-.commentFooter {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.commentLikeButton {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  font-size: 0.875rem;
-  color: #9ca3af;
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-
-.commentLikeButton:hover {
-  color: #374151;
-}
-
-.commentLikeButton.commentLiked {
-  color: #dc2626;
-}
-
-.commentLikeIcon {
-  width: 1rem;
-  height: 1rem;
-}
-
-.commentLikeIconFilled {
-  fill: currentColor;
-}
-
-.replyButton {
-  font-size: 0.875rem;
-  color: #9ca3af;
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-
-.replyButton:hover {
-  color: #374151;
-}
-
-.replies {
-  margin-top: 1rem;
-  padding-left: 1rem;
-  border-left: 2px solid #f3f4f6;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.reply {
-  display: flex;
-  gap: 0.75rem;
-}
-
-.replyAvatar {
   width: 1.5rem;
   height: 1.5rem;
-  background-color: #9ca3af;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 0.75rem;
-  font-weight: 500;
-  flex-shrink: 0;
 }
 
-.replyContent {
-  flex: 1;
-}
-
-.replyHeader {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.25rem;
-}
-
-.replyAuthor {
-  font-weight: 500;
-  color: #111827;
-  font-size: 0.875rem;
-}
-
-.replyTime {
-  font-size: 0.75rem;
-  color: #9ca3af;
-}
-
-.replyText {
-  color: #374151;
-  font-size: 0.875rem;
-  line-height: 1.625;
-  margin-bottom: 0.5rem;
-}
-
-.replyLikeButton {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  font-size: 0.75rem;
-  color: #9ca3af;
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-
-.replyLikeButton:hover {
-  color: #374151;
-}
-
-.replyLikeIcon {
-  width: 0.75rem;
-  height: 0.75rem;
-}

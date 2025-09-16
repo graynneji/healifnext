@@ -9,7 +9,7 @@ import Header from "../Header/Header";
 import Nav from "../Nav/Nav";
 import styles from "./Care.module.css";
 import { useRealTime } from "../../hooks/useRealTime";
-import { formatTime } from "@/app/utils/formatTime";
+import { formatTime } from "@/app/utils";
 
 export default function Care() {
   const [newMessage, setNewMessage] = useState("");
@@ -31,7 +31,6 @@ export default function Care() {
     : patientRecieverId?.patientId;
 
   const messages = useRealTime(userId, recieverId);
-  console.log(messages);
 
   useEffect(() => {
     if (chatEndRef.current) {

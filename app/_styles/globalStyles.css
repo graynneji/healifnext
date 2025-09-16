@@ -1,15 +1,17 @@
 :root {
 
   /* Green */
-  --primary: #008080;
+  /* --primary: #008080;
   --button-hover: #006666;
---button-active: #004C4C;
+--button-active: #004C4C; */
 /* --color-text-primary:  */
 --primary-text: #1F2937;
 --secondary-text: #6B7280;
 --placeholder-text: #9CA3AF;
   /* --primary: #00A86b; */
-  /* --primary: #8a9a5b; */
+  --primary: #4e7560;
+  --button-hover: #3A5E4A;
+  --button-active: #2E493A;
 --color-green-950: #022c22;
 --color-green-900: #064e3b;
 --color-green-800: #065f46;

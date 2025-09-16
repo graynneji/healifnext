@@ -22,7 +22,7 @@ export async function GET(request) {
       redirect(next);
     }
   }
-  console.log(error);
+  // console.log(error);
   // redirect the user to an error page with some instructions
   redirect("/error");
 }

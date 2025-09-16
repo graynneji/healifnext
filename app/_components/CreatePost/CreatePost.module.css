@@ -17,7 +17,7 @@
   border-radius: 12px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   width: 100%;
-  max-width: 350px;
+  max-width: 400px;
   max-height: 100vh;
   overflow-y: auto;
 }
@@ -78,7 +78,7 @@
   padding: 0.75rem 1rem;
   border: 1px solid #d1d5db;
   border-radius: 8px;
-  font-size: 10px;
+  font-size: 12px;
   transition: all 0.2s;
   box-sizing: border-box;
 }
@@ -98,7 +98,7 @@
 }
 
 .characterCount {
-  font-size: 0.875rem;
+  font-size: 10px;
   color: #6b7280;
   margin-top: 0.25rem;
 }
@@ -135,7 +135,7 @@
   padding: 0.75rem 1rem 0.75rem 2.75rem;
   border: 1px solid #d1d5db;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 12px;
   transition: all 0.2s;
   box-sizing: border-box;
 }
@@ -147,7 +147,7 @@
 }
 
 .helpText {
-  font-size: 0.875rem;
+  font-size: 14px;
   color: #6b7280;
   margin-top: 0.25rem;
 }
@@ -159,7 +159,7 @@
 }
 
 .optionsTitle {
-  font-size: 0.875rem;
+  font-size: 14px;
   font-weight: 600;
   color: #374151;
   margin: 0;
@@ -181,7 +181,7 @@
 }
 
 .checkboxText {
-  font-size: 0.875rem;
+  font-size: 14px;
   color: #374151;
 }
 

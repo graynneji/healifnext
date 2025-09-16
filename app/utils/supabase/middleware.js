@@ -11,6 +11,7 @@ export async function updateSession(request) {
     {
       cookies: {
         getAll() {
+          console.log(request.cookies.getAll(), "cookies");
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
@@ -35,17 +36,18 @@ export async function updateSession(request) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
-  if (
-    !user &&
-    !request.nextUrl.pathname.startsWith("/login") &&
-    !request.nextUrl.pathname.startsWith("/auth")
-  ) {
-    // no user, potentially respond by redirecting the user to the login page
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    return NextResponse.redirect(url);
-  }
+  console.log(user);
+  // if (
+  //   !user &&
+  //   !request.nextUrl.pathname.startsWith("/login")
+  // &&
+  // !request.nextUrl.pathname.startsWith("/auth")
+  // ) {
+  // no user, potentially respond by redirecting the user to the login page
+  //   const url = request.nextUrl.clone();
+  //   url.pathname = "/login";
+  //   return NextResponse.redirect(url);
+  // }
 
   if (!user && request.nextUrl.pathname.startsWith("/therapy")) {
     const url = request.nextUrl.clone();

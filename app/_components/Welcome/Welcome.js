@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useTransition } from "react";
 import Image from "next/image";
 import {
   UserPlus,
@@ -8,8 +8,13 @@ import {
 } from "@phosphor-icons/react/dist/ssr";
 import Logo from "@/public/Company Logo.svg";
 import styles from "./Welcome.module.css";
+import { signOut } from "@/app/_lib/actions";
 
 const Welcome = () => {
+  const [isPending, startTransition] = useTransition();
+  const handleSignout = () => {
+    startTransition(() => signOut());
+  };
   return (
     <div className={styles.welcomeContainer}>
       <div className={styles.welcomeContent}>
@@ -80,7 +85,9 @@ const Welcome = () => {
             </div>
           </div>
 
-          <button className={styles.logoutButton}>Logout</button>
+          <button onClick={handleSignout} className={styles.logoutButton}>
+            {isPending ? "Logging Out..." : "Logout"}
+          </button>
         </div>
       </div>
 

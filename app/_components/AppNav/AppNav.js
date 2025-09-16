@@ -10,7 +10,7 @@ import { supabase } from "@/app/_lib/supabase";
 import Profile from "@/public/applicationIcon/confident-b.png";
 import { useListenTypingStatus } from "@/app/hooks/useListenTypingStatus";
 import ProfilePicsThera from "@/public/t.jpg";
-import { capitalizeFirstLetter } from "@/app/utils/capitalizeFirstLetter";
+import { capitalizeFirstLetter } from "@/app/utils";
 
 function AppNav({ userInfo }) {
   const dispatch = useDispatch();

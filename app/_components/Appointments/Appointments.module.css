@@ -388,7 +388,7 @@ font-size: 8px;
 }
 
 .buttonSave:hover {
-  background-color: var(--primary)e6;
+  background-color: var(--button-hover);
 }
 
 @keyframes fadeIn {

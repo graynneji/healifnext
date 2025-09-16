@@ -430,7 +430,17 @@ export default function CallUI({ inCall, caller, type, channel }) {
       setLocalStream(null);
       setConnectionState("disconnected");
     };
-  }, [channel, inCall, type, caller, userId]);
+  }, [
+    channel,
+    inCall,
+    type,
+    caller,
+    userId,
+    connectionState,
+    endCall,
+    isValidCallState,
+    localStream,
+  ]);
 
   ////////////Debug Log/////////////////
 

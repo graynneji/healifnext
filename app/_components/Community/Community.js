@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./Community.module.css";
 import {
   ChatTeardropText,
@@ -16,13 +16,18 @@ import {
 import CreatePost from "../CreatePost/CreatePost";
 import Discussions from "../Discussions/Discussions";
 import DiscussionView from "../DiscussionView/DiscussionView";
+import { postLikes } from "@/app/_lib/actions";
 
-const Community = () => {
+const Community = ({ initialDiscussions, count }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("all");
+  const [commentCount, setCommentCount] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const [discussion, setDiscussion] = useState({});
   const [open, setOpen] = useState(true);
+  const [views, setViews] = useState(0);
+  const scrollref = useRef(null);
+  const [likes, setLikes] = useState([]);
 
   const categories = [
     { id: "all", name: "All Topics", icon: Users, color: "blue" },
@@ -50,14 +55,8 @@ const Community = () => {
     return category ? category.color : "gray";
   };
 
-  const Icon = {
-    Heart: Heart,
-    Briefcase: Briefcase,
-    House: House,
-    Star: Star,
-    TrendUp: TrendUp,
-    ChatTeardropText: ChatTeardropText,
-    Users: Users,
+  const handleLikes = async (userId, discussionId) => {
+    await postLikes(userId, discussionId);
   };
 
   return (
@@ -132,7 +131,7 @@ const Community = () => {
                   </div>
                   <div className={styles.statItem}>
                     <span className={styles.statLabel}>Total Posts</span>
-                    <span className={styles.statValue}>8,932</span>
+                    <span className={styles.statValue}>{count}</span>
                   </div>
                   <div className={styles.statItem}>
                     <span className={styles.statLabel}>Online Now</span>
@@ -143,7 +142,7 @@ const Community = () => {
             </div>
 
             {/* Main Content */}
-            <div className={styles.content}>
+            <div className={styles.content} ref={scrollref}>
               {/* Search Bar */}
               {open && (
                 <>
@@ -185,6 +184,11 @@ const Community = () => {
                   setOpen={setOpen}
                   activeCategory={activeCategory}
                   searchTerm={searchTerm}
+                  initialDiscussions={initialDiscussions}
+                  setViews={setViews}
+                  setCommentCount={setCommentCount}
+                  commentCount={commentCount}
+                  handleLikes={handleLikes}
                 />
               ) : (
                 <DiscussionView
@@ -193,6 +197,10 @@ const Community = () => {
                   categories={categories}
                   getCategoryIcon={getCategoryIcon}
                   getCategoryColor={getCategoryColor}
+                  setCommentCount={setCommentCount}
+                  commentCount={commentCount}
+                  views={views}
+                  handleLikes={handleLikes}
                 />
               )}
             </div>

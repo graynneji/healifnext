@@ -2,7 +2,7 @@
 import { updateNote } from "@/app/_lib/data-services";
 import styles from "./AddNotes.module.css";
 import { updateViewNotes } from "@/app/_lib/actions";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import Input from "../Input/Input";
 
 function AddNotes({ setFormVisible, setNewNote, addNote, newNote, patientId }) {
@@ -10,6 +10,7 @@ function AddNotes({ setFormVisible, setNewNote, addNote, newNote, patientId }) {
     return ["#fef3c7", "#dbeafe", "#d1fae5", "#ede9fe", "#fce7f3"];
   }, []);
   const [selectedColor, setSelectedColor] = useState("");
+  const [isPending, startTransition] = useTransition();
   const [character, setCharacter] = useState({
     note: "",
   });
@@ -38,22 +39,14 @@ function AddNotes({ setFormVisible, setNewNote, addNote, newNote, patientId }) {
         <h3 className={styles.modalTitle}>Add New Note</h3>
         <form
           action={async (formData) => {
-            // debounce(async (formData) => {
-            console.log("debounce log");
-            const data = await notes(formData);
-            // }, 500);
+            startTransition(async () => {
+              const data = await notes(formData);
+            });
 
             setNewNote(data);
             setFormVisible(false);
           }}
         >
-          {/* <textarea
-            value={newNote}
-            onChange={(e) => handleChange(e.target.value)}
-            placeholder="Enter your note here..."
-            className={styles.noteTextarea}
-            name="note"
-          /> */}
           <Input
             inputType="addnote"
             name="note"
@@ -73,8 +66,7 @@ function AddNotes({ setFormVisible, setNewNote, addNote, newNote, patientId }) {
               Cancel
             </button>
             <button disabled={disabled} className={styles.saveBtn}>
-              {/* <button onClick={addNote} className={styles.saveBtn}> */}
-              Save Note
+              {isPending ? "loading..." : "Save Note"}
             </button>
           </div>
         </form>

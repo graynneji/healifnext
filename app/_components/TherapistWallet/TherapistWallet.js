@@ -11,7 +11,7 @@ import {
   Eye,
   EyeClosed,
 } from "@phosphor-icons/react/dist/ssr";
-import { formatCurrency } from "@/app/utils/formatCurrency";
+import { formatCurrency } from "@/app/utils";
 
 function TherapistWallet({ therapistData }) {
   console.log(therapistData);

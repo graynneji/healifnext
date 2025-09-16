@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 
 function Stream() {
   const { inCall, caller, type, channel } = useSelector((state) => state.call);
-  console.log("let it rain", inCall, channel);
   return (
     <>
       {inCall && (

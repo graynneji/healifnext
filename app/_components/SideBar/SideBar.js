@@ -2,35 +2,29 @@
 import styles from "./SideBar.module.css";
 import Link from "next/link";
 import Image from "next/image";
-import Logo from "@/public/ORANGE LOGO SVG.svg";
-import PatientsCard from "../PatientsCard/PatientsCard";
-import MenuSquare from "@/public/applicationIcon/squares-2x2.svg";
+import Logo from "@/public/LOGO IN BLACK PNG.svg";
 import {
-  ChatCircleText,
-  GearSix,
-  Sidebar,
-  CalendarDots,
-  SidebarSimple,
   UserCircle,
   SealCheck,
   VideoCamera,
   ChatTeardropText,
-  MagnifyingGlass,
-  CaretRight,
-  Plus,
-  Clock,
-  Bookmark,
   SignOut,
   DotsThreeOutline,
-  Wallet,
   CalendarCheck,
   GrainsSlash,
   UsersThree,
   ChatDots,
+  CheckCircle,
+  Medal,
+  Shield,
+  Certificate,
+  OpenAiLogo,
+  Brain,
+  Chats,
 } from "@phosphor-icons/react/dist/ssr";
 import { PhoneCall, Star } from "@phosphor-icons/react";
 import ProfilePicsThera from "@/public/t.jpg";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { signOut } from "@/app/_lib/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { sideBarToggle } from "@/app/store/sideBarSlice";
@@ -39,6 +33,7 @@ import { RiSidebarFoldFill, RiSidebarUnfoldFill } from "react-icons/ri";
 import SidebarSkeleton from "../SideBarSkeleton/SidebarSkeleton";
 import MenuComponent from "../MenuComponent/menuComponent";
 import { usePathname, useSearchParams } from "next/navigation";
+import { getUsers } from "@/app/_lib/data-services";
 
 // const messNav = [
 //   { menuName: "Sessions", MenuIcon: ChatCircleText },
@@ -87,38 +82,38 @@ const RenderTherapistDetails = ({ users }) => {
   const pathname = usePathname();
   const queryString = searchParams.toString();
   const currentUrl = queryString ? `${pathname}?${queryString}` : pathname;
+  const repCurrentUrl = currentUrl.replace("+", " ");
   const handleSignout = () => {
     startTransition(() => signOut());
   };
   const handleOpenClose = () => {
     setIsOpen((prev) => !prev);
   };
+
   const therapist = {
-    name: "Dr. Maya Thompson",
     isVerified: true,
     profileImage: "/maya.jpg",
-    bio: "Licensed therapist with 10+ years of experience helping individuals with anxiety, depression, and trauma recovery.",
-    license: "LCSW #123456 (California)",
+
     communication: ["Video", "Phone", "Chat"],
     specialties: ["Anxiety", "Depression", "PTSD"],
-    location: "Los Angeles, CA",
   };
 
   const menus = [
     {
       title: "Session",
-      Icon: ChatDots,
+      Icon: Chats,
+      // Icon: ChatDots,
       url: "/therapy",
     },
     {
       title: "Appointment",
       Icon: CalendarCheck,
-      url: "/therapy/appointment",
+      url: `/therapy/appointment?userID=${users[0]?.user_id}&therapistId=${users[0]?.therapist?.therapist_id}`,
     },
     {
       title: "CareFlow AI",
-      Icon: GrainsSlash,
-      url: "/therapy/careflow-ai",
+      Icon: Brain,
+      url: `/therapy/careflow-ai/${users[0]?.user_id}`,
     },
     {
       title: "Community",
@@ -168,29 +163,34 @@ const RenderTherapistDetails = ({ users }) => {
         <div className={styles.nameVerification}>
           <h2 className={styles.therapistName}>
             {users[0]?.therapist?.name}
-            {therapist.isVerified && (
-              <SealCheck
-                size={22}
-                color="#1D9BF0"
-                weight="fill"
-                className={styles.verifiedBadge}
-              />
-            )}
+
+            <SealCheck
+              size={22}
+              color="#1D9BF0"
+              weight="fill"
+              className={styles.verifiedBadge}
+            />
           </h2>
-          <div className={styles.ratingBar}>
+          {/* <div className={styles.ratingBar}>
             <div className={styles.stars}>
               {Array.from({ length: 5 }, (_, i) => (
                 <Star key={i} size={16} weight="fill" color="#fbbf24" />
               ))}
             </div>
             <span className={styles.ratingText}>5.0 (126 reviews)</span>
+          </div> */}
+          <div className={styles.credentialBar}>
+            <div className={styles.badge}>
+              <Certificate size={16} weight="fill" color="#4e7560" />
+              <span className={styles.badgeText}>Mental Specialist</span>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Bio with card styling */}
       <div className={styles.bioCard}>
-        <p className={styles.bioText}>{therapist.bio}</p>
+        <p className={styles.bioText}>{users[0]?.therapist?.summary}</p>
       </div>
 
       {/* Information sections with card styling and icons */}
@@ -231,7 +231,7 @@ const RenderTherapistDetails = ({ users }) => {
             <Link key={menu?.title} href={menu.url}>
               <button
                 className={`${styles.actionButton} ${
-                  currentUrl == menu?.url
+                  repCurrentUrl == menu?.url
                     ? styles.primaryButton
                     : styles.secondaryButton
                 }`}
@@ -304,10 +304,19 @@ const RenderComponent = ({ users, therapistInfo }) => {
   );
 };
 
-function SideBar({ userInfo, therapistInfo }) {
+function SideBar({ therapistInfo }) {
   const dispatch = useDispatch();
   const sidebar = useSelector((state) => state.sideBar.sidebar);
-  const users = useSelector((state) => state.getStoredUsers.users);
+  // const users = useSelector((state) => state.getStoredUsers.users);
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    async function fetchUsers() {
+      const userInfo = await getUsers();
+      setUsers(userInfo || []);
+    }
+    fetchUsers();
+  }, []);
 
   const handleSidebarToggle = () => {
     dispatch(sideBarToggle());
@@ -331,10 +340,11 @@ function SideBar({ userInfo, therapistInfo }) {
         <Link href="/" className={styles.logoLink}>
           <Image
             width={100}
-            height={15}
+            height={0}
             src={Logo}
             alt="Logo"
             className={styles.logo}
+            style={{ height: "auto" }}
           />
         </Link>
 

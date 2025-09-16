@@ -11,6 +11,7 @@
     overflow-y: auto;
     position: relative;
     padding: 0;
+    flex-shrink: 0; 
     scrollbar-width: thin;
     scrollbar-color: #d4d4d4 transparent;
     font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -21,6 +22,9 @@
         position: absolute;
         z-index: 9999999;
         /* height: 100%; */
+        width: 300px;
+        min-width: none;
+        flex-shrink: 1;
 
     }
 }
@@ -346,10 +350,76 @@
     margin: 0 0 4px;
     color: #1a202c;
   }
-  
-  .verifiedBadge {
-    margin-left: 8px;
+  .credentialBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: rgba(78, 117, 96, 0.1);
+  padding: 4px 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(78, 117, 96, 0.2);
+}
+
+.badgeText {
+  font-size: 12px;
+  font-weight: 500;
+  color: #4e7560;
+  line-height: 1;
+}
+
+/* Alternative badge styles if you want different looks */
+
+/* Solid Badge Style */
+.badge.solid {
+  background-color: #4e7560;
+  border: none;
+}
+
+.badge.solid .badgeText {
+  color: white;
+}
+
+/* Minimal Badge Style */
+.badge.minimal {
+  background-color: transparent;
+  border: 1px solid #4e7560;
+  padding: 3px 6px;
+}
+
+/* Rounded Badge Style */
+.badge.rounded {
+  border-radius: 20px;
+  padding: 5px 10px;
+}
+
+/* Multiple badges container (if you want to show multiple credentials) */
+.credentialBar.multiple {
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .badgeText {
+    font-size: 11px;
   }
+  
+  .badge {
+    padding: 3px 6px;
+    gap: 4px;
+  }
+}
+.verifiedBadge {
+  margin-left: 8px;
+  }
+  /*   
   
   .ratingBar {
     display: flex;
@@ -366,7 +436,7 @@
   .ratingText {
     font-size: 12px;
     color: #718096;
-  }
+  } */
   
   .bioCard {
     margin: 0 20px 24px;
@@ -413,10 +483,11 @@
     justify-content: center;
     width: 36px;
     height: 36px;
-    background-color: #f0f7f4;
+    background-color: rgba(78, 117, 96, 0.1);
     border-radius: 8px;
     margin-right: 12px;
     color: var(--primary);
+    border: 1px solid rgba(78, 117, 96, 0.2);
   }
   
   .infoContent {
@@ -447,11 +518,12 @@
   
   .specialtyTag {
     padding: 4px 10px;
-    background-color: #edf7f0;
+    background-color: rgba(78, 117, 96, 0.1);
     color: #4a5568;
     border-radius: 20px;
     font-size: 12px;
     font-weight: 500;
+    border: 1px solid rgba(78, 117, 96, 0.2);
   }
   
   .communicationSection {
@@ -622,10 +694,10 @@
   }
   
   /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .sideBarContainer {
+  @media (max-width: 468px) {
+    /* .sideBarContainer {
       width: 280px;
-    }
+    } */
     
     .commMethods {
       flex-direction: column;

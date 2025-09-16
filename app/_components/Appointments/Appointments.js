@@ -1,137 +1,59 @@
-// "use client";
-// import React, { useState } from "react";
-// import FullCalendar from "@fullcalendar/react";
-// import timeGridPlugin from "@fullcalendar/timegrid";
-// import interactionPlugin from "@fullcalendar/interaction";
-// // import { Calendar as CalendarIcon } from "lucide-react";
-// import styles from "./Appointments.module.css";
-// import { CalendarDots } from "@phosphor-icons/react/dist/ssr";
-
-// const Appointments = () => {
-//   // Sample events
-//   const [events, setEvents] = useState([
-//     {
-//       id: "1",
-//       title: "Project Meeting",
-//       start: "2025-05-17T10:00:00",
-//       end: "2025-05-17T11:30:00",
-//       backgroundColor: "#3b82f6",
-//       borderColor: "#3b82f6",
-//     },
-//     {
-//       id: "2",
-//       title: "Client Call",
-//       start: "2025-05-18T14:00:00",
-//       end: "2025-05-18T15:00:00",
-//       backgroundColor: "#10b981",
-//       borderColor: "#10b981",
-//     },
-//     {
-//       id: "3",
-//       title: "Team Review",
-//       start: "2025-05-19T13:00:00",
-//       end: "2025-05-19T14:30:00",
-//       backgroundColor: "#f59e0b",
-//       borderColor: "#f59e0b",
-//     },
-//   ]);
-
-//   const handleDateClick = (info) => {
-//     const title = prompt("Enter event title:");
-//     if (title) {
-//       setEvents([
-//         ...events,
-//         {
-//           id: String(events.length + 1),
-//           title,
-//           start: info.dateStr,
-//           end: new Date(
-//             new Date(info.dateStr).getTime() + 60 * 60 * 1000
-//           ).toISOString(),
-//           backgroundColor: "#3b82f6",
-//           borderColor: "#3b82f6",
-//         },
-//       ]);
-//     }
-//   };
-
-//   return (
-//     <div className={styles.container}>
-//       <div className={styles.header}>
-//         {/* <CalendarIcon className="mr-2 text-blue-500" size={24} /> */}
-//         <CalendarDots className={styles.icon} size={24} />
-//         <h2 className={styles.title}>Schedule</h2>
-//       </div>
-
-//       <div className={styles.calendarContainer}>
-//         <FullCalendar
-//           plugins={[timeGridPlugin, interactionPlugin]}
-//           initialView="timeGridWeek"
-//           events={events}
-//           selectable={true}
-//           dateClick={handleDateClick}
-//           height="auto"
-//           headerToolbar={{
-//             left: "prev,next today",
-//             center: "title",
-//             right: "timeGridWeek,timeGridDay",
-//           }}
-//           slotMinTime="08:00:00"
-//           slotMaxTime="20:00:00"
-//           allDaySlot={false}
-//           nowIndicator={true}
-//           businessHours={{
-//             daysOfWeek: [1, 2, 3, 4, 5],
-//             startTime: "09:00",
-//             endTime: "17:00",
-//           }}
-//           eventTimeFormat={{
-//             hour: "2-digit",
-//             minute: "2-digit",
-//             meridiem: "short",
-//           }}
-//         />
-//       </div>
-
-//     </div>
-//   );
-// };
-
-// export default Appointments;
-
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import styles from "./Appointments.module.css";
 import { CalendarDots } from "@phosphor-icons/react/dist/ssr";
+import { appointments } from "@/app/_lib/data-services";
+import { appointment } from "@/app/_lib/actions";
+import { useSearchParams } from "next/navigation";
 
 const Appointments = () => {
-  // Sample events
-  const [events, setEvents] = useState([
-    {
-      id: "1",
-      title: "Project Meeting",
-      start: "2025-05-17T10:00:00",
-      backgroundColor: "#3b82f6",
-      borderColor: "#3b82f6",
-    },
-    {
-      id: "2",
-      title: "Client Call",
-      start: "2025-05-18T14:00:00",
-      backgroundColor: "#10b981",
-      borderColor: "#10b981",
-    },
-    {
-      id: "3",
-      title: "Team Review",
-      start: "2025-05-19T13:00:00",
-      backgroundColor: "#f59e0b",
-      borderColor: "#f59e0b",
-    },
-  ]);
+  const searchParams = useSearchParams();
+  const userId = searchParams.get("userID");
+  const therapistId = searchParams.get("therapistId");
+  const [color, setColor] = useState();
+  const [loaded, setLoaded] = useState(0);
+  const options = {
+    userId,
+    therapistId,
+    color,
+  };
+
+  const schedule = appointment.bind(null, options);
+  const [events, setEvents] = useState([]);
+  // useState([
+  //   {
+  //     id: "1",
+  //     title: "Project Meeting",
+  //     start: "2025-05-17T10:00:00",
+  //     backgroundColor: "#3b82f6",
+  //     borderColor: "#3b82f6",
+  //   },
+  //   {
+  //     id: "2",
+  //     title: "Client Call",
+  //     start: "2025-05-18T14:00:00",
+  //     backgroundColor: "#10b981",
+  //     borderColor: "#10b981",
+  //   },
+  //   {
+  //     id: "3",
+  //     title: "Team Review",
+  //     start: "2025-05-19T13:00:00",
+  //     backgroundColor: "#f59e0b",
+  //     borderColor: "#f59e0b",
+  //   },
+  // ]);
+
+  useEffect(() => {
+    async function loadAppointments() {
+      const { data, error } = await appointments(userId, therapistId);
+      setEvents(data || []);
+    }
+    loadAppointments();
+  }, [loaded, userId, therapistId]);
 
   // Modal state
   const [showModal, setShowModal] = useState(false);
@@ -154,6 +76,7 @@ const Appointments = () => {
   };
 
   const handleColorChange = (color) => {
+    setColor(color);
     setNewEvent({
       ...newEvent,
       backgroundColor: color,
@@ -295,7 +218,14 @@ const Appointments = () => {
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className={styles.modalBody}>
+            <form
+              action={async (formData) => {
+                const { data, error } = await schedule(formData);
+                setLoaded((prev) => prev + 1);
+                setShowModal(false);
+              }}
+              className={styles.modalBody}
+            >
               <div className={styles.formGroup}>
                 <label htmlFor="title" className={styles.label}>
                   Event Title

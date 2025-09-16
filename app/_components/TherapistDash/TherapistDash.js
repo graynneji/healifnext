@@ -35,24 +35,9 @@ function TherapistDash({ userInfo, patientsTherapist }) {
   return (
     <section style={{ width: "auto" }} className={styles.appLayout}>
       <AppNav userInfo={userInfo} />
-      {/* <div
-        style={{
-          flexGrow: 1,
-          overflowY: "auto",
-          paddingTop: "60px",
-          paddingBottom: "60px",
-          paddingRight: "20px",
-          paddingLeft: "20px",
-        }}
-      > */}
-      {/* <Care userInfo={userInfo} patientsTherapist={patientsTherapist} /> */}
-      {/* <div className={styles.contentContainer}> */}
       <Care />
-      {/* </div> */}
-      {/* </div> */}
       <div className={styles.rare}>
         <MessageInput patientsTherapist={patientsTherapist} />
-        {/* <FooterMenu /> */}
       </div>
     </section>
   );

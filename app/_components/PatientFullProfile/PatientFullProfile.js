@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import {
   Calendar,
   Clock,
@@ -12,7 +12,7 @@ import QuestionaireModal from "../QuestionaireModal/QuestionaireModal";
 import { useSearchParams } from "next/navigation";
 import AddNotes from "../AddNotes/AddNotes";
 import { getNote, getQuestionaire } from "@/app/_lib/data-services";
-import { formatNoteDate } from "@/app/utils/formatTime";
+import { formatNoteDate } from "@/app/utils";
 
 export default function PatientFullProfile() {
   // Sample patient data
@@ -63,7 +63,8 @@ export default function PatientFullProfile() {
   const patientName = searchParams.get("name") || "";
   const filteredName = patientName.replace(/[^a-zA-Z0-9]/g, " ");
   const [notes, setNotes] = useState([]);
-  console.log(questionnaire);
+  const [isPending, startTransition] = useTransition();
+
   useEffect(() => {
     async function fetchNotes() {
       const data = await getNote(patientId);
@@ -74,24 +75,22 @@ export default function PatientFullProfile() {
     }
     fetchNotes();
   }, [newNote, patientId]);
-  // }, [newNote]);
-
-  console.log(notes);
 
   // Delete note
-  const deleteNote = (id) => {
-    setPatient({
-      ...patient,
-      notes: patient.notes.filter((note) => note.id !== id),
-    });
-  };
+  // const deleteNote = (id) => {
+  //   setPatient({
+  //     ...patient,
+  //     notes: patient.notes.filter((note) => note.id !== id),
+  //   });
+  // };
 
   const handleQuestionaire = async (id) => {
-    console.log(id, "heeeee");
-    const data = await getQuestionaire(id);
-    console.log(data);
-    setQuestionnaire(JSON.parse(data[0]?.selected));
-    setQuestionnaireVisible(true);
+    startTransition(async () => {
+      const data = await getQuestionaire(id);
+
+      setQuestionnaire(JSON.parse(data[0]?.selected));
+      setQuestionnaireVisible(true);
+    });
   };
 
   return (
@@ -107,7 +106,7 @@ export default function PatientFullProfile() {
             className={styles.viewIntakeBtn}
           >
             <FileText size={18} className={styles.icon} />
-            Questionaire
+            {isPending ? "loading... " : "Questionaire"}
           </button>
         </div>
 

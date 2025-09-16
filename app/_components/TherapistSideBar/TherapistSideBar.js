@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   MagnifyingGlass,
   ChatText,
@@ -17,13 +17,14 @@ import styles from "./TherapistSideBar.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useRealTime } from "@/app/hooks/useRealTime";
 import { useMessPrev } from "@/app/hooks/useMessPrev";
-import { formatTime } from "@/app/utils/formatTime";
+import { formatTime } from "@/app/utils";
 import { getPatientRecvId } from "@/app/store/getPatientRecvIdSlice";
 import { usePathname, useRouter } from "next/navigation";
 import PatientList from "../PatientList/PatientList";
 import CallHistory from "../CallHistory/CallHistory";
-import { formatCurrency } from "@/app/utils/formatCurrency";
-import { capitalizeFirstLetter } from "@/app/utils/capitalizeFirstLetter";
+import { formatCurrency } from "@/app/utils";
+import { capitalizeFirstLetter } from "@/app/utils";
+import { getAllPatientsAttachedToTherapist } from "@/app/_lib/data-services";
 
 // Navigation tabs data
 const messNav = [
@@ -72,7 +73,6 @@ const patientsData = [
 const PatientCard = ({ patient, collectedMsg, onHandleClick, isActive }) => {
   const pathname = usePathname();
   return (
-    // <Link href={`/dashboard/messages/${patient.id}`}>
     <div
       className={`${styles.patientCard} ${
         isActive && pathname == "/dashboard" ? styles.activePatient : ""
@@ -100,25 +100,23 @@ const PatientCard = ({ patient, collectedMsg, onHandleClick, isActive }) => {
               {capitalizeFirstLetter(patient?.name)}
             </h4>
             <span className={styles.messageTime}>
-              {/* {patient.time || "1:00am"} */}
               {formatTime(collectedMsg?.created_at)}
             </span>
           </div>
 
           <p className={styles.lastMessage}>
-            {/* {patient.lastMessage || "Hello Gray"} */}
             {collectedMsg?.message?.split(" ").slice(0, 6).join(" ")}
           </p>
 
           <div className={styles.messageFooter}>
-            {patient.unread > 0 && (
-              <span className={styles.unreadBadge}>{patient.unread}</span>
-            )}
+            {/* {patient.unread > 0 && ( */}
+            <span className={styles.unreadBadge}>3</span>
+            {/* <span className={styles.unreadBadge}>{patient.unread}</span> */}
+            {/* )} */}
           </div>
         </div>
       </>
     </div>
-    // </Link>
   );
 };
 
@@ -134,9 +132,16 @@ const TherapistSidebar = ({ users, therapistInfo }) => {
   const conversations = useMessPrev(userId);
   const conversationEntries = Object.entries(conversations);
   const messageMap = new Map(conversationEntries); // id => message
-  const therapistPatients = useSelector(
-    (state) => state.getTherapistPatients.therapistPatients
-  );
+  const [therapistPatients, setTherapistPatients] = useState([]);
+
+  useEffect(() => {
+    async function fetchTherpistPatients() {
+      const data = await getAllPatientsAttachedToTherapist();
+      setTherapistPatients(data || []);
+    }
+    fetchTherpistPatients();
+  }, []);
+
   const filteredPatients = therapistPatients.filter(
     (patient) => patient?.name?.toLowerCase().includes(searchTerm.toLowerCase())
     // ||

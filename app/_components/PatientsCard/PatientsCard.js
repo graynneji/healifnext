@@ -4,7 +4,7 @@ import styles from "./PatientsCard.module.css";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { getPatientRecvId } from "@/app/store/getPatientRecvIdSlice";
-import { getRandomColor } from "@/app/utils/color";
+import { getRandomColor } from "@/app/utils";
 
 const PatientsCard = ({ name = null, image = null, type = null }) => {
   const therapistPatients = useSelector(

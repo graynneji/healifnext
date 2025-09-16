@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -30,6 +30,8 @@ import {
   Heartbeat,
   Pulse,
 } from "@phosphor-icons/react/dist/ssr";
+import { main } from "@/app/_llm/model";
+import { AI_PROMPT } from "@/app/constants";
 
 // Mock data for demonstration
 const mockProgress = [
@@ -48,8 +50,57 @@ const engagementData = [
   { month: "May", attendance: 100, participation: 90, homework: 85 },
 ];
 
-export default function CareFlowAI() {
+export default function CareFlowAI({ notes }) {
+  console.log("note", notes);
   const [activeTab, setActiveTab] = useState("overview");
+  const [report, setReport] = useState();
+  // console.log("heyyaty", report);
+
+  const processedNotes = notes
+    .map((note, index) => {
+      const noteText = note.text;
+      const createdAt = note.timestamp
+        ? new Date(note.timestamp).toLocaleDateString()
+        : "";
+      return `Note ${index + 1}
+       ${noteText}`;
+      // return `Note ${index + 1} (${createdAt}): ${noteText}`;
+    })
+    .join("\n\n");
+  const processedTime = notes
+    .map((note, index) => {
+      const createdAt = note.timestamp
+        ? new Date(note.timestamp).toLocaleDateString()
+        : "";
+      return `Time ${index + 1} (${createdAt})`;
+    })
+    .join("\n\n");
+  console.log(processedNotes, "created");
+
+  useEffect(() => {
+    const generateReport = async () => {
+      try {
+        // setLoading(true);
+        const FINAL_PROMPT = AI_PROMPT.replace(
+          "{therapistNotes}",
+          processedNotes
+        ).replace("{totalMonths}", processedTime);
+        // .replace("{questionnaireData}", processedNotes)
+        // .replace("{chatHistory}", patientData.chatHistory)
+        console.log("Prompt Sent to AI:", FINAL_PROMPT);
+        const result = await main(AI_PROMPT);
+        setReport(result);
+        console.log("hey");
+      } catch (error) {
+        console.log("Error", error);
+      }
+      // finally {
+      // setLoading(false);
+      // router.push("/Mytrip");
+      // }
+    };
+    generateReport();
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -57,10 +108,8 @@ export default function CareFlowAI() {
       <header className={styles.header}>
         <div className={styles.headerContent}>
           <div className={styles.logo}>
-            <div className={styles.logoIcon}>
-              <Brain size={20} />
-            </div>
-            <h1 className={styles.logoText}>CareFlowAI</h1>
+            {/* <div className={styles.logoIcon}><Brain size={20} /></div> */}
+            <h1 className={styles.logoText}>Care Flow AI</h1>
           </div>
           <div className={styles.headerInfo}>
             <span className={styles.dateText}>

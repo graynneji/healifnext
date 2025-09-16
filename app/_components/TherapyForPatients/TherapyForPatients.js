@@ -16,23 +16,9 @@ function TherapyForPatients({ userInfo }) {
   return (
     <section style={{ width: "auto" }} className={styles.appLayout}>
       <AppNav userInfo={userInfo} />
-      {/* <div
-        style={{
-          flexGrow: 1,
-          overflowY: "auto",
-          paddingTop: "60px",
-          paddingBottom: "60px",
-          paddingRight: "20px",
-          paddingLeft: "20px",
-        }}
-      > */}
-      {/* <div className={styles.contentContainer}> */}
       <Care />
-      {/* </div> */}
-      {/* </div> */}
       <div className={styles.rare}>
         <MessageInput />
-        {/* <FooterMenu /> */}
       </div>
     </section>
   );

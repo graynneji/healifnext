@@ -1,124 +1,122 @@
 .careContainer {
-    display: flex;
-    flex-direction: column;
-    /* height: 100vh; */
-    background-color: #f5f5f7;
-    flex-grow: 1;
-    overflow: auto;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE 10+ */
-    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-    /* line-height: 26px; */
-    letter-spacing: -0.004em;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  /* height: 100vh; */
+  background-color: #f5f5f7;
+  flex-grow: 1;
+  overflow: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  /* line-height: 26px; */
+  letter-spacing: -0.004em;
+}
+
 .careContainer::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
+}
 
-  }
-  
-  .chatWrapper {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-  
-  .chatContent {
-    flex: 1;
-    overflow-y: auto;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-  
-  .dateGroup {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  
-  .dateHeader {
-    display: flex;
-    justify-content: center;
-    margin: 8px 0;
-  }
-  
-  .dateLabel {
-    padding: 4px 12px;
-    background-color: rgba(0, 0, 0, 0.08);
-    border-radius: 16px;
-    /* font-size: 0.75rem; */
-    font-size: 1rem;
-    color: #1b1b1bd0;
-  }
-  
-  .messageRow {
-    display: flex;
-    margin-bottom: 8px;
-  }
-  
-  .senderRow {
-    justify-content: flex-end;
-  }
-  
-  .receiverRow {
-    justify-content: flex-start;
-  }
-  
+.chatWrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chatContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dateGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dateHeader {
+  display: flex;
+  justify-content: center;
+  margin: 8px 0;
+}
+
+.dateLabel {
+  padding: 4px 12px;
+  background-color: rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  /* font-size: 0.75rem; */
+  font-size: 1rem;
+  color: #1b1b1bd0;
+}
+
+.messageRow {
+  display: flex;
+  margin-bottom: 8px;
+}
+
+.senderRow {
+  justify-content: flex-end;
+}
+
+.receiverRow {
+  justify-content: flex-start;
+}
+
+.messageBubble {
+  max-width: 70%;
+  padding: 10px 14px;
+  border-radius: 18px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.senderBubble {
+  background-color: white;
+  /* background-color: #0b84ff; */
+  color: #1b1b1b;
+  border-top-right-radius: 4px;
+}
+
+.receiverBubble {
+  background-color: var(--);
+  /* background-color: var(--primary)dc; */
+  /* background-color: white; */
+  color: white;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-top-left-radius: 4px;
+}
+
+.messageText {
+  font-size: 1.35rem;
+  /* font-size: 0.95rem; */
+  line-height: 1.4;
+  word-wrap: break-word;
+  /* line-height: 26px; */
+}
+
+.messageTime {
+  /* font-size: 0.7rem; */
+  font-size: 0.95rem;
+  margin-top: 4px;
+  text-align: right;
+}
+
+.senderTime {
+  /* color: rgba(255, 255, 255, 0.7); */
+  color: #444;
+}
+
+.receiverTime {
+  /* color: #888; */
+  color: rgba(255, 255, 255, 0.7);
+}
+
+@media (max-width: 768px) {
   .messageBubble {
-    max-width: 70%;
-    padding: 10px 14px;
-    border-radius: 18px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    position: relative;
+    max-width: 85%;
   }
-  
-  .senderBubble {
-    background-color: white;
-    /* background-color: #0b84ff; */
-    color: #1B1B1B;
-    border-top-right-radius: 4px;
-  }
-  
-  .receiverBubble {
-    background-color: var(--primary);
-    /* background-color: var(--primary)dc; */
-    /* background-color: white; */
-    color: white;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    border-top-left-radius: 4px;
-  }
-  
-  .messageText {
-    font-size: 1.35rem;
-    /* font-size: 0.95rem; */
-    line-height: 1.4;
-    word-wrap: break-word;
-       /* line-height: 26px; */
-
-  }
-  
-  .messageTime {
-    /* font-size: 0.7rem; */
-    font-size: 0.95rem;
-    margin-top: 4px;
-    text-align: right;
-  }
-  
-  .senderTime {
-    /* color: rgba(255, 255, 255, 0.7); */
-    color: #444;
-  }
-  
-  .receiverTime {
-    /* color: #888; */
-    color: rgba(255, 255, 255, 0.7);
-  }
-  
-  @media (max-width: 768px) {
-    .messageBubble {
-      max-width: 85%;
-    }
-  }
+}
